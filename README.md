@@ -12,6 +12,10 @@ If you feel it helpful, please cite the paper mentioned above.
 We use ```julia1.9``` and we provide the ```Project.toml``` and ```Manifest.toml``` files for our environment.
 If you are using REPL, you should be able to activate it by typing ```activate .``` in Pkg REPL(i.e. ```] activate .```). If you are running the code files from the command line, remember to include ```--project```(i.e. ```julia --project filename.jl```).
 
+## Data
+The five real-world datasets we use can be accessed at [Hypergraph Datasets](https://www.cs.cornell.edu/~arb/data/). The procedure of accessing the web graph data is included in 
+the corresponding directory. 
+
 ## Basic Usage 
 ```./src``` contains all the codes, experiment-specific codes are included in ```./src/Exp...``` folders, others are commonly used codes shared through experiments. 
 
