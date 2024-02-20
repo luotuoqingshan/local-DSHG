@@ -124,6 +124,41 @@ end
 
 
 """
+    read_txt(filepath)
+
+Read an undirected graph from a txt file, return the adjacency matrix.
+
+Corresponding Datasets: email-Enron ca-AstroPh ca-HepPh com-amazon com-youtube
+"""
+function read_txt(filepath)
+    I = Array{Int}(undef, 0) 
+    J = Array{Int}(undef, 0)
+    linecounter = 0
+    m = 0
+    open(filepath) do file
+        for l in eachline(file)  
+            linecounter += 1
+            if linecounter >= 5                 
+                u, v = split(l, '\t')
+                u = parse(Int, u)
+                v = parse(Int, v)
+                if u != v
+                    push!(I, u); push!(J, v)
+                    push!(I, v); push!(J, u)
+                end
+            end
+        end
+    end
+    I .+= 1
+    J .+= 1
+    n = maximum(J)
+    A = sparse(I, J, ones(Float64, length(I)), n, n)
+    A, _ = largest_component(A)
+    return A 
+end
+
+
+"""
     preprocess_graph(dataset, [delmultiedge=false, filefolder=homedir()*"/local-DHSG/data/"])
 
 Preprocess a hypergraph dataset and store it in a .mat file. 
@@ -161,6 +196,21 @@ function preprocess_graph(
             "H"=>H,
             "L"=>L,
             "label_names"=>label_names,
+        )
+    elseif dataset in [
+        "ca-AstroPh",
+        "ca-HepPh",
+        "email-Enron",
+        "com-amazon",
+        "com-youtube",
+    ]
+        if dataset in ["ca-AstroPh", "ca-HepPh", "email-Enron"]
+            A = read_txt(filefolder*dataset*".txt")
+        else
+            A = read_txt(filefolder*dataset*".ungraph.txt")
+        end
+        newres = Dict(
+            "A"=>A,
         )
     else
         error("Dataset not supported")
